@@ -59,6 +59,95 @@ public class Board extends JPanel {
     private short[] screenData;
     private Timer timer;
 
+    public Board(){
+        initVariables();
+        initBoard();
+    }
+
+    private void initBoard(){
+        setFocusable(true);
+        setBackground(Color.BLACK);
+
+    }
+
+    private void initVariables(){
+        screenData = new short[N_BLOCKS*N_BLOCKS];
+        mazeColor = new Color(5, 100, 5);
+        d = new Dimension(400, 400);
+        ghost_x = new int [MAX_GHOSTS];
+        ghost_dx = new int [MAX_GHOSTS];
+        ghost_y = new int [MAX_GHOSTS];
+        ghost_dy = new int [MAX_GHOSTS];
+        ghostSpeed = new int [MAX_GHOSTS];
+        dx = new int[4];
+        dy = new int[4];
+
+    }
+
+    @Override
+    public void addNotify(){
+        super.addNotify();
+        initGame();
+
+    }
+
+    private void initGame() {
+        pacsLeft = 3;
+        score = 0;
+        initLevel();
+        n_ghosts = 6;
+        currentSpeed = 3;
+    }
+
+    private void initLevel(){
+        for(int i=0; i<N_BLOCKS*N_BLOCKS; i++){
+            screenData[i] = levelData[i];
+        }
+    }
+
+
+    private void drawMaze(Graphics2D graphics2D) {
+        short i = 0; // Initialize the index to track the position in screenData
+
+        // Loop through each block's y-coordinate
+        for (int y = 0; y < SCREEN_SIZE; y += BLOCK_SIZE) {
+            // Loop through each block's x-coordinate
+            for (int x = 0; x < SCREEN_SIZE; x += BLOCK_SIZE) {
+                graphics2D.setColor(mazeColor); // Set the maze color
+                graphics2D.setStroke(new BasicStroke(2)); // Set the stroke width for the walls
+
+                // Check if the left wall (bit 0) should be drawn
+                if ((screenData[i] & 1) != 0) {
+                    graphics2D.drawLine(x, y, x, y + BLOCK_SIZE - 1); // Draw left wall
+                }
+
+                // Check if the top wall (bit 1) should be drawn
+                if ((screenData[i] & 2) != 0) {
+                    graphics2D.drawLine(x, y, x + BLOCK_SIZE - 1, y); // Draw top wall
+                }
+
+                // Check if the right wall (bit 2) should be drawn
+                if ((screenData[i] & 4) != 0) {
+                    graphics2D.drawLine(x + BLOCK_SIZE - 1, y, x + BLOCK_SIZE - 1, y + BLOCK_SIZE - 1); // Draw right wall
+                }
+
+                // Check if the bottom wall (bit 3) should be drawn
+                if ((screenData[i] & 8) != 0) {
+                    graphics2D.drawLine(x, y + BLOCK_SIZE - 1, x + BLOCK_SIZE - 1, y + BLOCK_SIZE - 1); // Draw bottom wall
+                }
+
+                // Check if there is a dot (bit 4) in the block
+                if ((screenData[i] & 16) != 0) {
+                    graphics2D.setColor(dotColor); // Set the color for the dot
+                    graphics2D.fillRect(x + 11, y + 11, 2, 2); // Draw the dot at the center of the block
+                }
+
+                // Increment the index for screenData
+                i++;
+            }
+        }
+    }
+
 
 
 
