@@ -19,9 +19,12 @@ public class Pacman extends JFrame {
     }
     public static void main(String[] args){
         EventQueue.invokeLater(()-> {
-
             Pacman ex = new Pacman();
             ex.setVisible(true);
+
+            String filepath = "/pacman/media/pacmanMusic.wav";
+            Board musicObject = new Board();
+            musicObject.playMusic(filepath);
 
         });
     }
